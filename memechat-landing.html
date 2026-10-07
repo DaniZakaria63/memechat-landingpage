@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MemeChat — Meme Smarter, Not Harder</title>
+<meta name="description" content="MemeChat is an offline-first AI chat that actually knows memes — a full vision-language model running entirely on your phone.">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<style>
+/* ============================================================
+   MemeChat — SaaS landing
+   Design target: "Enblox" responsive SaaS template (reference image)
+   Content source: website.html · App screens: preview.webp / preview-_1_.webp
+   ============================================================ */
+:root{
+  --bg:#ffffff;
+  --fg:#0a0a0a;
+  --fg2:#1f1f1f;
+  --muted:#6b6b6b;
+  --muted2:#9a9a9a;
+  --line:#ededec;
+  --chip:#f4f4f3;
+
+  /* sunset palette, sampled from the reference band */
+  --violet:#620f69;
+  --magenta:#a01b84;
+  --accent:#ea2e68;
+  --orange:#fe8c46;
+  --amber:#fba23a;
+
+  --sans:'Inter','Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --display:'Plus Jakarta Sans','Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --serif:'Instrument Serif',Georgia,'Times New Roman',serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+
+  --ease:cubic-bezier(.23,1,.32,1);
+  --wrap:1200px;
+  --pad:48px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--fg);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:clip;
+}
+::selection{background:var(--accent);color:#fff}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+.serif{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.01em}
+.mono{font-family:var(--mono)}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--pad)}
+:focus-visible{outline:2.5px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+/* ---------- pills / buttons ---------- */
+.pill{
+  display:inline-flex;align-items:center;gap:9px;border:1.5px solid var(--fg);border-radius:999px;
+  padding:13px 24px;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--fg);background:#fff;transition:background .25s var(--ease),color .25s var(--ease),border-color .25s var(--ease),transform .25s var(--ease);
+  white-space:nowrap;cursor:pointer
+}
+.pill:hover{background:var(--fg);color:#fff;transform:translateY(-1px)}
+.pill .ar{width:14px;height:14px;flex:none;transition:transform .25s var(--ease)}
+.pill:hover .ar{transform:translateX(3px)}
+.pill.solid{background:var(--fg);color:#fff}
+.pill.solid:hover{background:#2b2b2b;border-color:#2b2b2b}
+.pill.big{padding:17px 32px;font-size:11px}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.site-head{
+  position:sticky;top:0;z-index:60;background:rgba(255,255,255,0);
+  transition:background .3s var(--ease),border-color .3s var(--ease),backdrop-filter .3s var(--ease);
+  border-bottom:1px solid transparent
+}
+.site-head.scrolled{background:rgba(255,255,255,.82);backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px);border-bottom-color:var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;max-width:1440px;margin:0 auto;padding:20px var(--pad);gap:24px}
+.brand{display:flex;align-items:center;gap:11px;font-family:var(--display);font-weight:800;font-size:16.5px;letter-spacing:-.02em}
+.brand img{width:30px;height:30px;border-radius:9px;object-fit:cover;box-shadow:0 8px 18px rgba(60,12,60,.16)}
+.nav-links{display:flex;gap:34px;font-size:14px;font-weight:500;color:var(--fg2);margin-left:auto;margin-right:auto}
+.nav-links a{opacity:.74;transition:opacity .2s var(--ease),color .2s var(--ease)}
+.nav-links a:hover{opacity:1}
+.nav-cta{flex:none}
+.nav-toggle{display:none;flex:none;width:44px;height:44px;border:1.5px solid var(--fg);border-radius:999px;background:#fff;cursor:pointer;align-items:center;justify-content:center}
+.nav-toggle svg{width:18px;height:18px}
+.mobile-menu{display:none}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{position:relative;overflow:hidden;padding-bottom:40px}
+.aur{
+  position:absolute;left:50%;top:-120px;width:min(1900px,150vw);height:1180px;transform:translateX(-50%);
+  z-index:0;pointer-events:none;
+  background:
+    radial-gradient(28% 34% at 30% 42%, rgba(236,117,137,.58), transparent 70%),
+    radial-gradient(26% 32% at 42% 30%, rgba(245,151,143,.62), transparent 70%),
+    radial-gradient(30% 34% at 53% 50%, rgba(251,138,124,.52), transparent 72%),
+    radial-gradient(24% 30% at 65% 36%, rgba(237,166,210,.52), transparent 72%),
+    radial-gradient(22% 28% at 77% 46%, rgba(254,140,70,.44), transparent 76%),
+    radial-gradient(24% 30% at 58% 62%, rgba(124,31,168,.34), transparent 78%);
+  filter:blur(72px) saturate(1.12);
+  -webkit-mask-image:radial-gradient(66% 74% at 50% 46%, #000 34%, transparent 76%);
+          mask-image:radial-gradient(66% 74% at 50% 46%, #000 34%, transparent 76%);
+  animation:aurdrift 17s ease-in-out infinite alternate
+}
+@keyframes aurdrift{from{transform:translateX(-50%) translateY(0) scale(1)}to{transform:translateX(-50%) translateY(18px) scale(1.03)}}
+
+.hero-in{position:relative;z-index:3;text-align:center;padding:56px 24px 0}
+.eyebrow{font-family:var(--serif);font-style:italic;font-size:clamp(1rem,1.7vw,1.5rem);color:#191919}
+.hero h1{
+  font-family:var(--display);margin:16px auto 0;font-size:clamp(3rem,8.8vw,7.4rem);line-height:.98;letter-spacing:-.035em;font-weight:700;
+  max-width:14ch;text-wrap:balance
+}
+.hero-sub{margin:22px auto 0;max-width:600px;font-size:clamp(1rem,1.15vw,1.0625rem);line-height:1.68;color:var(--muted)}
+.hero-cta{margin-top:30px}
+.hero-micro{margin-top:16px;font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;color:#7a7a7a;text-transform:uppercase}
+
+/* ---------- phone stage ---------- */
+.stage{position:relative;height:640px;margin-top:22px;z-index:1}
+.stage-glow{position:absolute;left:50%;top:540px;width:460px;height:80px;transform:translateX(-50%);border-radius:50%;
+  background:radial-gradient(closest-side, rgba(30,8,30,.26), transparent 72%);filter:blur(15px)}
+.phone-wrap{position:absolute;left:50%;top:0;transform:translateX(-50%);z-index:2}
+.phone{
+  position:relative;width:clamp(198px,21vw,252px);aspect-ratio:695/1568;box-sizing:border-box;
+  border:8px solid #101012;border-radius:40px;background:#050505;overflow:hidden;
+  box-shadow:0 44px 90px rgba(40,10,40,.28), 0 0 0 1px rgba(255,255,255,.5) inset, 0 2px 0 rgba(255,255,255,.28) inset;
+  animation:handhold 7s ease-in-out infinite
+}
+@keyframes handhold{0%,100%{transform:rotate(4deg) translateY(0)}50%{transform:rotate(4deg) translateY(-12px)}}
+.phone img{width:100%;height:100%;object-fit:cover;object-position:top center}
+.phone::after{content:"";position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  width:72px;height:20px;border-radius:999px;background:#060606;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);z-index:5}
+.phone::before{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;border-radius:32px;
+  background:linear-gradient(120deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,0) 32%)}
+
+.float{position:absolute;z-index:4}
+.f-pill{left:50%;top:224px;margin-left:-232px;background:rgba(255,255,255,.92);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1px solid rgba(10,10,10,.08);border-radius:999px;
+  padding:10px 16px;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.14em;color:var(--fg);
+  box-shadow:0 16px 36px rgba(40,10,40,.14);animation:floaty 6s .2s ease-in-out infinite}
+.f-pill i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:1px}
+.f-bub{left:50%;top:452px;margin-left:66px;background:#fff;border-radius:14px;padding:10px 14px;
+  font-family:var(--mono);font-size:10.5px;font-weight:700;color:#151515;box-shadow:0 16px 36px rgba(40,10,40,.16);
+  animation:floaty 6s .5s ease-in-out infinite}
+.f-bub::after{content:"";position:absolute;left:14px;bottom:-5px;width:11px;height:11px;background:#fff;transform:rotate(45deg);border-radius:2px}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-9px) rotate(-3deg)}}
+
+/* ============================================================
+   ABOUT
+   ============================================================ */
+.about{padding:132px 0 116px}
+.about-grid{display:grid;grid-template-columns:1.45fr .55fr;gap:56px;align-items:end}
+.about h2{font-family:var(--display);font-size:clamp(2.4rem,7vw,6.6rem);line-height:1.03;letter-spacing:-.035em;font-weight:700}
+.about h2 .serif{font-size:1.06em}
+.about .side p{font-size:clamp(1rem,1.25vw,1.1875rem);line-height:1.6;color:var(--fg2);max-width:390px}
+.acols{display:grid;grid-template-columns:repeat(3,1fr);gap:48px;margin-top:88px}
+.acol{border-top:1px solid var(--line);padding-top:22px;transition:transform .3s var(--ease)}
+.acol:hover{transform:translateY(-3px)}
+.acol .idx{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--accent);font-weight:700}
+.acol h3{margin-top:14px;font-size:1rem;font-weight:700;letter-spacing:-.01em}
+.acol p{margin-top:10px;font-size:.875rem;line-height:1.7;color:var(--muted)}
+
+/* ============================================================
+   CHAT / DEMO
+   ============================================================ */
+.chatsec{padding:96px 0 120px}
+.chat-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:72px;align-items:center}
+.chat-grid h2{font-family:var(--display);font-size:clamp(2rem,4.6vw,4.4rem);line-height:1.03;letter-spacing:-.03em;font-weight:700}
+.chat-grid h2 .serif{font-size:1.05em}
+.chat-grid .side p{margin-top:24px;font-size:1rem;line-height:1.7;color:var(--muted);max-width:360px}
+.facts{display:flex;flex-direction:column;gap:12px;margin-top:32px}
+.facts span{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:#8f8f8f}
+.facts span i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:9px;vertical-align:1px}
+.demo-panel{
+  position:relative;border:1px solid var(--line);border-radius:30px;padding:44px 40px 0;overflow:hidden;
+  background:linear-gradient(180deg,#fbfaf9 0%,#f4f2f1 100%);
+  display:flex;justify-content:center;min-height:520px
+}
+.aur2{position:absolute;inset:-40px;pointer-events:none;
+  background:
+    radial-gradient(30% 40% at 34% 40%, rgba(236,117,137,.34), transparent 70%),
+    radial-gradient(28% 38% at 60% 34%, rgba(254,140,70,.30), transparent 72%),
+    radial-gradient(28% 40% at 50% 70%, rgba(124,31,168,.20), transparent 76%);
+  filter:blur(52px);-webkit-mask-image:radial-gradient(74% 82% at 50% 54%, #000 40%, transparent 84%);
+          mask-image:radial-gradient(74% 82% at 50% 54%, #000 40%, transparent 84%)}
+.demo-phone{position:relative;z-index:2;width:clamp(210px,24vw,268px);aspect-ratio:695/1568;box-sizing:border-box;
+  border:8px solid #101012;border-radius:40px;background:#050505;overflow:hidden;margin-bottom:-4px;
+  box-shadow:0 40px 80px rgba(40,10,40,.24)}
+.demo-phone img{width:100%;height:100%;object-fit:cover;object-position:top center}
+.demo-phone::after{content:"";position:absolute;top:12px;left:50%;transform:translateX(-50%);width:70px;height:19px;border-radius:999px;background:#060606;z-index:5}
+.demo-cap{margin-top:26px;text-align:center;font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;color:var(--muted2);text-transform:uppercase}
+
+/* ============================================================
+   RAG / RETRIEVAL
+   ============================================================ */
+.ragsec{padding:96px 0 120px}
+.rag-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:72px;align-items:center}
+.kicker{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--accent);font-weight:700;text-transform:uppercase}
+.rag-grid h2{font-family:var(--display);margin-top:16px;font-size:clamp(2rem,4.6vw,4.4rem);line-height:1.03;letter-spacing:-.03em;font-weight:700}
+.rag-grid h2 .serif{font-size:1.05em}
+.rag-grid .side p{margin-top:24px;font-size:1rem;line-height:1.7;color:var(--muted);max-width:380px}
+.rag-panel{
+  position:relative;border:1px solid var(--line);border-radius:30px;padding:38px 34px 28px;overflow:hidden;
+  background:linear-gradient(180deg,#fbfaf9 0%,#f4f2f1 100%)
+}
+.rag-q{position:relative;z-index:2;display:inline-block;max-width:100%;background:#fff;border:1px solid var(--line);
+  border-radius:16px 16px 16px 5px;padding:13px 17px;font-size:.9rem;font-weight:600;color:var(--fg);
+  box-shadow:0 12px 26px rgba(40,10,40,.06)}
+.rag-a{position:relative;z-index:2;margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:18px;
+  padding:18px 18px 16px;box-shadow:0 18px 42px rgba(40,10,40,.09)}
+.rag-a p{font-size:.9rem;line-height:1.65;color:var(--fg2)}
+.rag-a p+p{margin-top:8px;color:var(--muted)}
+.src-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+.src{font-family:var(--mono);font-size:9.5px;letter-spacing:.04em;color:#4a4a4a;background:var(--chip);
+  border:1px solid var(--line);border-radius:999px;padding:6px 11px}
+.rag-cap{position:relative;z-index:2;margin-top:18px;text-align:center;font-family:var(--mono);
+  font-size:9.5px;letter-spacing:.2em;color:var(--muted2);text-transform:uppercase}
+
+/* ============================================================
+   CTA
+   ============================================================ */
+.ctasec{padding:8px 0 0}
+.cta-panel{position:relative;overflow:hidden;border-radius:38px;padding:104px 56px 92px;text-align:center;
+  background:#fff;border:1px solid var(--line)}
+.cta-aur{position:absolute;inset:-70px;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(26% 32% at 32% 44%, rgba(236,117,137,.5), transparent 70%),
+    radial-gradient(24% 30% at 44% 32%, rgba(245,151,143,.56), transparent 70%),
+    radial-gradient(26% 32% at 56% 54%, rgba(251,138,124,.46), transparent 72%),
+    radial-gradient(22% 28% at 68% 38%, rgba(237,166,210,.48), transparent 72%),
+    radial-gradient(20% 26% at 76% 56%, rgba(254,140,70,.42), transparent 76%),
+    radial-gradient(20% 26% at 24% 60%, rgba(124,31,168,.3), transparent 76%);
+  filter:blur(60px) saturate(1.12);
+  -webkit-mask-image:radial-gradient(70% 86% at 50% 54%, #000 42%, transparent 82%);
+          mask-image:radial-gradient(70% 86% at 50% 54%, #000 42%, transparent 82%);
+  animation:aurdrift2 15s ease-in-out infinite alternate}
+@keyframes aurdrift2{from{transform:translateY(0) scale(1)}to{transform:translateY(12px) scale(1.02)}}
+.cta-panel>.cta-kit,.cta-panel>h2,.cta-panel>.cta-btns,.cta-panel>.cta-micro{position:relative;z-index:1}
+.cta-kit{position:relative;display:inline-block;margin-bottom:34px;animation:floaty 6.5s ease-in-out infinite}
+.kit-badge{display:block;width:118px;height:118px;border-radius:50%;background:#fff;overflow:hidden;
+  box-shadow:0 26px 54px rgba(40,10,40,.22), 0 0 0 7px #fff;transform:rotate(6deg)}
+.kit-badge img{width:100%;height:100%;object-fit:cover;display:block}
+.cbub{position:absolute;top:-14px;right:-112px;background:#fff;border-radius:13px;padding:9px 13px;
+  font-family:var(--mono);font-size:10.5px;font-weight:700;color:#151515;box-shadow:0 16px 34px rgba(40,10,40,.16);
+  transform:rotate(4deg);animation:floaty2 6.5s .5s ease-in-out infinite;white-space:nowrap}
+@keyframes floaty2{0%,100%{transform:translateY(0) rotate(4deg)}50%{transform:translateY(-9px) rotate(4deg)}}
+.cbub::after{content:"";position:absolute;left:12px;bottom:-5px;width:10px;height:10px;background:#fff;transform:rotate(45deg);border-radius:2px}
+.cta-panel h2{font-family:var(--display);font-size:clamp(2rem,4.7vw,4rem);line-height:1.03;letter-spacing:-.035em;font-weight:700;max-width:16ch;margin:0 auto}
+.cta-panel h2 .serif{font-size:1.08em}
+.cta-btns{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:38px;flex-wrap:wrap}
+.cta-micro{margin-top:26px;font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:#8f8f8f;text-transform:uppercase}
+
+/* ---------- full-bleed sunset band ---------- */
+.band{height:104px;margin-top:104px;
+  background:linear-gradient(90deg,var(--violet) 0%,var(--magenta) 22%,var(--accent) 50%,var(--orange) 78%,var(--amber) 100%)}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{padding:64px 0 46px;background:#fff}
+.fgrid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:44px}
+.fbrand .brand{font-size:15.5px}
+.fbrand .brand img{width:28px;height:28px}
+.fbrand p{margin-top:16px;font-size:.875rem;line-height:1.7;color:var(--muted);max-width:300px}
+.fcol h4{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.22em;color:var(--muted2);margin-bottom:16px}
+.fcol a{display:block;font-size:.875rem;font-weight:500;color:#2a2a2a;margin-bottom:11px;opacity:.86;transition:opacity .2s var(--ease)}
+.fcol a:hover{opacity:1}
+.fbot{margin-top:54px;padding-top:26px;border-top:1px solid var(--line);text-align:center;
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:#a8a8a8;text-transform:uppercase}
+
+/* ============================================================
+   REVEAL
+   ============================================================ */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media(max-width:1080px){
+  :root{--pad:34px}
+  .about-grid{grid-template-columns:1fr;gap:30px;align-items:start}
+  .chat-grid{grid-template-columns:1fr;gap:46px}
+  .chat-grid .side{max-width:620px}
+  .rag-grid{grid-template-columns:1fr;gap:46px}
+  .rag-grid .side{max-width:620px}
+  .about h2{font-size:clamp(2.4rem,8.4vw,4.6rem)}
+}
+@media(max-width:900px){
+  .nav-links{display:none}
+  .nav-toggle{display:inline-flex}
+  .nav-cta{display:none}
+  .nav{position:relative}
+  .mobile-menu{
+    display:none;position:absolute;left:var(--pad);right:var(--pad);top:calc(100% - 6px);z-index:70;
+    background:#fff;border:1px solid var(--line);border-radius:22px;padding:14px;
+    box-shadow:0 30px 60px rgba(20,20,25,.14);flex-direction:column;gap:2px
+  }
+  .mobile-menu.open{display:flex}
+  .mobile-menu a{padding:14px 16px;border-radius:14px;font-size:15px;font-weight:600;color:var(--fg)}
+  .mobile-menu a:hover{background:var(--chip)}
+  .mobile-menu .pill{justify-content:center;margin-top:8px}
+}
+@media(max-width:620px){
+  :root{--pad:22px}
+  .hero-in{padding-top:34px}
+  .hero h1{font-size:clamp(2.55rem,12.5vw,3.4rem);max-width:12ch}
+  .eyebrow{font-size:1.05rem}
+  .hero-sub{font-size:.95rem}
+  .stage{height:500px;margin-top:14px}
+  .phone{width:clamp(180px,52vw,220px);border-width:7px;border-radius:34px}
+  .stage-glow{top:430px;width:320px}
+  .f-pill{top:150px;margin-left:-150px}
+  .f-bub{top:340px;margin-left:44px;font-size:9.5px}
+  .about{padding:84px 0 76px}
+  .acols{grid-template-columns:1fr;gap:30px;margin-top:56px}
+  .chatsec{padding:64px 0 80px}
+  .ragsec{padding:64px 0 80px}
+  .demo-panel{padding:32px 20px 0;min-height:460px}
+  .rag-panel{padding:30px 20px 24px}
+  .ctasec{padding-top:6px}
+  .cta-panel{padding:72px 22px 66px;border-radius:26px}
+  .kit-badge{width:96px;height:96px}
+  .cbub{right:-88px;font-size:9.5px}
+  .pill.big{padding:15px 24px;font-size:10px}
+  .band{height:78px;margin-top:72px}
+  .fgrid{grid-template-columns:1fr;gap:32px}
+  .fbot{font-size:9px;letter-spacing:.14em}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header class="site-head" data-od-id="site-header">
+  <nav class="nav">
+    <a class="brand" href="#top" data-od-id="brand">
+      <img src="assets/images/memechat-mascot.png" alt="MemeChat mascot"/>
+      MemeChat
+    </a>
+    <div class="nav-links" data-od-id="nav-links">
+      <a href="#features">Features</a>
+      <a href="#chat">Chat</a>
+      <a href="#rag">RAG</a>
+      <a href="#download">Download</a>
+    </div>
+    <a class="pill nav-cta" href="#download" data-od-id="nav-cta">Get MemeChat
+      <svg class="ar" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 3.5 13 8l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu" data-od-id="nav-toggle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
+    </button>
+  </nav>
+  <div class="mobile-menu" id="mobile-menu" data-od-id="mobile-menu">
+    <a href="#features">Features</a>
+    <a href="#chat">Chat</a>
+    <a href="#rag">RAG</a>
+    <a href="#download">Download</a>
+    <a class="pill solid" href="#download">Get MemeChat</a>
+  </div>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero" id="top" data-od-id="hero">
+  <div class="aur" aria-hidden="true"></div>
+  <div class="hero-in">
+    <p class="eyebrow">Your memes, finally explained.</p>
+    <h1>Meme Smarter,<br>Not Harder.</h1>
+    <p class="hero-sub">The AI chat that actually knows memes. Ask, roast, caption, translate — a full vision-language model that runs entirely on your phone.</p>
+    <div class="hero-cta">
+      <a class="pill solid big" href="#download" data-od-id="hero-cta">Download for free
+        <svg class="ar" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 3.5 13 8l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+    <p class="hero-micro">Free · 504 MB · Android 8+ · No account</p>
+
+    <div class="stage" data-od-id="hero-stage">
+      <div class="stage-glow" aria-hidden="true"></div>
+      <div class="phone-wrap">
+        <div class="phone">
+          <img src="assets/images/app-chat.webp" width="695" height="1568" alt="MemeChat app showing a chat with the kitten meme: Hi, nerd! What meme you got today?"/>
+        </div>
+      </div>
+      <div class="float f-pill" aria-hidden="true"><i></i>100% ON-DEVICE</div>
+      <div class="float f-bub" aria-hidden="true">hi nerd!</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ABOUT ===================== -->
+<section class="about" id="features" data-od-id="about">
+  <div class="wrap">
+    <div class="about-grid">
+      <h2 class="reveal" data-od-id="about-heading">Do More, <span class="serif">With Less.</span></h2>
+      <div class="side reveal" data-od-id="about-side">
+        <p>MemeChat is built for people who live on their phones but don&rsquo;t want to live in the cloud. Everything runs on-device — private, fast, and always yours.</p>
+      </div>
+    </div>
+    <div class="acols">
+      <article class="acol reveal" data-od-id="feature-card-vision">
+        <div class="idx">01 — VISION</div>
+        <h3>Meme Vision</h3>
+        <p>Point the camera at any meme and get the joke, the context, and the right reply — analyzed on-device in seconds.</p>
+      </article>
+      <article class="acol reveal" data-od-id="feature-card-memory">
+        <div class="idx">02 — MEMORY</div>
+        <h3>It Remembers</h3>
+        <p>Running jokes, names, bits. MemeChat keeps a private memory so you never repeat yourself twice.</p>
+      </article>
+      <article class="acol reveal" data-od-id="feature-card-offline">
+        <div class="idx">03 — OFFLINE</div>
+        <h3>Truly Offline</h3>
+        <p>No signal, no problem. Chat, roast, translate and caption — even in airplane mode. Nothing is ever uploaded.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CHAT / DEMO ===================== -->
+<section class="chatsec" id="chat" data-od-id="chat">
+  <div class="wrap">
+    <div class="chat-grid">
+      <div class="side reveal" data-od-id="chat-side">
+        <h2>Watch it <span class="serif">think.</span></h2>
+        <p>Every answer comes with a peek behind the curtain — watch the reasoning, then keep the joke.</p>
+        <div class="facts">
+          <span><i></i>MINICPM-V 4.6 · 504 MB</span>
+          <span><i></i>VISION + TEXT + MEMORY</span>
+          <span><i></i>0 UPLOADS · 0 ACCOUNTS</span>
+        </div>
+      </div>
+      <div class="demo-panel reveal" data-od-id="chat-demo">
+        <div class="aur2" aria-hidden="true"></div>
+        <div class="demo-phone">
+          <img src="assets/images/app-home.webp" width="695" height="1568" alt="MemeChat home screen with action buttons: Explain, Joke, Create, Caption, Roast, Translate, Similar, Backstory"/>
+        </div>
+      </div>
+    </div>
+    <p class="demo-cap reveal">The real app — same mono type, same colours</p>
+  </div>
+</section>
+
+<!-- ===================== RAG / RETRIEVAL ===================== -->
+<section class="ragsec" id="rag" data-od-id="rag">
+  <div class="wrap">
+    <div class="rag-grid">
+      <div class="side reveal" data-od-id="rag-side">
+        <div class="kicker">04 — Retrieval</div>
+        <h2>Answers with <span class="serif">receipts.</span></h2>
+        <p>When a joke needs a fact, MemeChat retrieves. It searches the web and your own photo roll, then grounds the reply in real sources — so the punchline lands and the details still check out.</p>
+        <div class="facts">
+          <span><i></i>ON-DEVICE RETRIEVAL</span>
+          <span><i></i>WEB + IMAGE SEARCH</span>
+          <span><i></i>SOURCES SHOWN · NOTHING STORED</span>
+        </div>
+      </div>
+      <div class="rag-panel reveal" data-od-id="rag-demo">
+        <div class="aur2" aria-hidden="true"></div>
+        <div class="rag-q">is this meme still a thing?</div>
+        <div class="rag-a">
+          <p>Checking the web and your saved memes — give me a moment.</p>
+          <p>Here&rsquo;s the picture, grounded in three sources:</p>
+          <div class="src-row">
+            <span class="src">knowyourmeme.com</span>
+            <span class="src">reddit.com/r/memes</span>
+            <span class="src">your memes · 12</span>
+          </div>
+        </div>
+        <div class="rag-cap">Retrieved live · cited inline</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section class="ctasec" id="download" data-od-id="cta">
+  <div class="wrap">
+    <div class="cta-panel reveal">
+      <div class="cta-aur" aria-hidden="true"></div>
+      <div class="cta-kit">
+        <span class="kit-badge"><img src="assets/images/memechat-mascot.png" width="118" height="118" alt="MemeChat kitten mascot"/></span>
+        <span class="cbub" aria-hidden="true">take me home</span>
+      </div>
+      <h2 data-od-id="cta-heading">Take the kitten <span class="serif">home.</span></h2>
+      <div class="cta-btns">
+        <a class="pill solid big" href="https://play.google.com/store/apps/details?id=fun.walawe.memechat" target="_blank" rel="noopener" data-od-id="cta-download">Download for Android
+          <svg class="ar" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 3.5 13 8l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+      <p class="cta-micro">Free to start · 504 MB · Android 8+ · fun.walawe.memechat</p>
+    </div>
+  </div>
+</section>
+
+<!-- full-bleed sunset band -->
+<div class="band" aria-hidden="true"></div>
+
+<!-- ===================== FOOTER ===================== -->
+<footer data-od-id="site-footer">
+  <div class="wrap">
+    <div class="fgrid">
+      <div class="fbrand">
+        <a class="brand" href="#top"><img src="assets/images/memechat-mascot.png" alt=""/>MemeChat</a>
+        <p>Offline AI chat with image &amp; web search.<br>Made privately in Indonesia.</p>
+      </div>
+      <nav class="fcol" aria-label="App">
+        <h4>APP</h4>
+        <a href="#features">Features</a>
+        <a href="#chat">Chat</a>
+        <a href="#rag">RAG</a>
+        <a href="#top">Back to top</a>
+      </nav>
+      <nav class="fcol" aria-label="More">
+        <h4>MORE</h4>
+        <a href="https://play.google.com/store/apps/details?id=fun.walawe.memechat" target="_blank" rel="noopener">Download</a>
+        <a href="mailto:dani.zakaria@proton.me">dani.zakaria@proton.me</a>
+      </nav>
+    </div>
+    <p class="fbot">© 2026 MemeChat — made in Indonesia</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var doc = document;
+  // sticky header shadow
+  var head = doc.querySelector('.site-head');
+  var onScroll = function(){ head.classList.toggle('scrolled', window.scrollY > 8); };
+  onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
+
+  // mobile menu
+  var toggle = doc.querySelector('.nav-toggle');
+  var menu = doc.getElementById('mobile-menu');
+  function closeMenu(){ menu.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); }
+  toggle.addEventListener('click', function(){
+    var open = menu.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  menu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMenu); });
+  doc.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeMenu(); });
+  window.addEventListener('resize', function(){ if(window.innerWidth > 900) closeMenu(); });
+
+  // scroll reveal
+  var items = doc.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en, i){
+        if(en.isIntersecting){
+          var el = en.target;
+          el.style.transitionDelay = (Math.min(i,4) * 90) + 'ms';
+          el.classList.add('in');
+          io.unobserve(el);
+        }
+      });
+    }, {rootMargin:'0px 0px -8% 0px', threshold:.12});
+    items.forEach(function(el){ io.observe(el); });
+  } else {
+    items.forEach(function(el){ el.classList.add('in'); });
+  }
+})();
+</script>
+</body>
+</html>

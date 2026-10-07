@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "name": "Enblox — Responsive SaaS template (reference) → MemeChat restyle",
+    "description": "Design identity extracted from the supplied reference screenshot 'Responsive-SaaS-Website-Template-in-Framer-with-Modern-Design.jpeg' (brand wordmark 'Enblox'), applied to MemeChat content taken from website.html.",
+    "source_references": "RECON/screenshots/original-reference.jpeg; website.html (MemeChat copy + app screenshots preview.webp / preview-_1_.webp)",
+    "created_at": "2026-10-07"
+  },
+
+  "design_system": {
+    "color": {
+      "palette_type": "analogous",
+      "primary":   { "hex": "#0a0a0a", "role": "Headlines, body ink, solid primary button" },
+      "secondary": { "hex": "#6b6b6b", "role": "Muted body copy, captions" },
+      "accent":    { "hex": "#ea2e68", "role": "Status dot / micro-label accent, sampled from the sunset band" },
+      "neutral":   { "scale": "#ffffff · #f4f4f3 · #ededec · #9a9a9a · #6b6b6b · #0a0a0a", "usage": "White canvas, chip fills, hairlines, muted + ink text" },
+      "semantic":  { "success": "#0e7a3b (inside app screenshots only)", "warning": "#fba23a", "error": "#ea2e68", "info": "#a01b84" },
+      "surface":   { "background": "#ffffff", "card": "#f4f4f3", "elevated": "#ffffff + soft diffused shadow" },
+      "contrast_strategy": "dark-on-light dominant"
+    },
+    "typography": {
+      "type_scale": {
+        "display":    { "size": "clamp(3rem, 8.8vw, 7.4rem)", "weight": "700", "line_height": "0.98", "tracking": "-0.035em" },
+        "heading_1":  { "size": "clamp(2.4rem, 7vw, 6.6rem)", "weight": "700", "line_height": "1.02", "tracking": "-0.035em" },
+        "heading_2":  { "size": "clamp(2rem, 4.6vw, 4.4rem)", "weight": "700", "line_height": "1.04", "tracking": "-0.03em" },
+        "heading_3":  { "size": "1rem", "weight": "700", "line_height": "1.3", "tracking": "-0.01em" },
+        "body":       { "size": "clamp(1rem, 1.1vw, 1.0625rem)", "weight": "400", "line_height": "1.68", "tracking": "0" },
+        "body_small": { "size": "0.875rem", "weight": "400", "line_height": "1.7", "tracking": "0" },
+        "caption":    { "size": "0.6875rem", "weight": "500", "line_height": "1.5", "tracking": "0.14em" },
+        "overline":   { "size": "0.625rem", "weight": "700", "line_height": "1.4", "tracking": "0.22em" }
+      },
+      "font_families": {
+        "heading": "Plus Jakarta Sans",
+        "body": "Plus Jakarta Sans",
+        "mono": "IBM Plex Mono"
+      },
+      "font_style_notes": "Serif italic accents ('With Less Wi-Fi.', 'think.', 'home.') use Instrument Serif italic. Uppercase micro labels/buttons use Plus Jakarta Sans or IBM Plex Mono with wide tracking. All families self-hosted from assets/fonts/."
+    },
+    "spacing": { "base_unit": "8px", "scale": "4 · 8 · 16 · 24 · 40 · 56 · 88 · 132", "content_density": "spacious", "section_rhythm": "Large vertical gaps (~110-160px desktop) between white-canvas sections; centered hero; asymmetric about grid" },
+    "layout":  { "grid_system": "CSS grid", "max_content_width": "1200px", "columns": "hero 1 · about 1.45fr/0.55fr + 3-up · chat 0.92fr/1.08fr · cta centered · footer 1.5fr/1fr/1fr", "gutter": "48px desktop / 22px mobile", "breakpoints": "1080 · 900 · 620", "alignment_tendency": "mixed" },
+    "shape":   { "border_radius": { "small": "9px", "medium": "16px", "large": "36px", "pill": "999px" }, "border_usage": "subtle 1px hairlines + 1.5px outlined pills", "divider_style": "1px #ededec hairlines; full-bleed sunset gradient band above footer" },
+    "elevation": { "shadow_style": "soft diffused", "levels": { "low": "0 6px 18px rgba(12,20,14,.06)", "medium": "0 20px 44px rgba(12,20,14,.12)", "high": "0 46px 100px rgba(12,22,14,.18)" }, "depth_cues": "shadows + hero gradient glow + overlapping phone" },
+    "iconography": { "style": "thin line + small solid marks", "stroke_weight": "1.6-1.7px", "size_scale": "14-16px", "preferred_set": "inline SVG (arrow, play, spark)" },
+    "motion": { "easing": "cubic-bezier(0.23, 1, 0.32, 1)", "duration_scale": { "micro": "140ms", "normal": "250ms", "macro": "700-1000ms" }, "entrance_pattern": "fade-up on scroll (IntersectionObserver, 24px, stagger 90ms)", "exit_pattern": "fade + 140ms", "philosophy": "minimal functional" },
+    "components": { "button_style": "pill — solid #0a0a0a (primary) or 1.5px outlined (secondary), uppercase 10-11px, tracking .14em, arrow glyph", "input_style": "chip-filled rounded input shown inside app screenshots only", "card_style": "white, radius 26-36px, 1px hairline, soft diffused shadow", "navigation_pattern": "sticky translucent top bar; centered links; right pill CTA", "modal_style": "n/a", "list_style": "3-up feature columns with mono index overline", "component_notes": "No accent-coloured large fills except the sunset gradient; UI stays near-monochrome." }
+  },
+
+  "design_style": {
+    "aesthetic": { "mood": ["calm", "premium", "confident", "warm"], "visual_metaphor": "A quiet white gallery whose one vivid moment is a sunrise glow behind the product.", "era_influence": "2020s SaaS minimalism + editorial display type", "genre": "SaaS / product marketing", "personality_traits": ["friendly", "precise", "uncluttered"], "adjectives": ["airy", "high-contrast", "editorial", "sunset"] },
+    "visual_language": { "complexity": "minimal", "ornamentation": "subtle accents", "whitespace_usage": "generous; sections breathe with large vertical rhythm", "visual_weight_distribution": "heavy display type balanced by a single centred product visual", "focal_strategy": "single hero element (the phone) then progressive reveal", "contrast_level": "high (near-black on white)", "texture_usage": "none; smooth gradients + soft shadows" },
+    "composition": { "hierarchy_method": "scale contrast", "balance_type": "symmetric hero, asymmetric about/chat", "flow_direction": "top-down centred then Z-pattern in split sections", "grouping_strategy": "one idea per section; 3-up columns for parallel features", "negative_space_role": "frames the product and gives the gradient room to glow" },
+    "imagery": { "photo_treatment": "real product screenshots inside a CSS device frame; warm bloom behind", "illustration_style": "none", "graphic_elements": "soft multi-radial gradient glow; thin arrow glyphs", "pattern_usage": "full-bleed sunset gradient band", "image_shape": "rounded phone frame" },
+    "interaction_feel": { "feedback_style": "button invert on hover; lift on cards", "hover_behavior": "background shifts ±0.06-0.12 L, never lighter text", "transition_personality": "smooth glide", "loading_style": "none visible", "microinteraction_density": "low" },
+    "brand_voice_in_ui": { "tone": "warm, playful-but-clear", "formality": "casual professional", "cta_style": "direct imperative", "empty_state_approach": "n/a", "error_tone": "n/a" }
+  },
+
+  "visual_effects": {
+    "overview": { "effect_intensity": "subtle-accent", "performance_tier": "lightweight", "fallback_strategy": "pure CSS gradients; no JS required for the look", "primary_technology": "CSS only" },
+    "background_effects": { "type": "gradient-animation", "description": "Multi-radial 'sunset' bloom behind the hero phone and CTA panel, drifting slowly; masked to fade into white.", "technology": "CSS radial-gradients + blur + mask + keyframes", "params": { "color_palette": "rose #ec7589 · coral #fb8a7c · pink #eda6d2 · amber #fe8c46 · violet #7c1fa8", "speed": "16s alternate", "density": "6 radials", "opacity": "0.3-0.6", "blend_mode": "normal" } },
+    "particle_systems": { "enabled": false, "type": "custom", "description": "none", "technology": "", "params": { "count": "", "shape": "", "size_range": "", "movement_pattern": "", "color_behavior": "", "interaction": "none", "spawn_area": "" } },
+    "3d_elements": { "enabled": false, "type": "hero-model", "description": "none", "technology": "", "params": { "renderer": "", "lighting": "", "camera": "", "materials": "", "geometry": "", "post_processing": [], "interaction_model": "" } },
+    "shader_effects": { "enabled": false, "type": "noise-distortion", "description": "none", "technology": "", "params": { "uniforms": "", "vertex_manipulation": "", "fragment_output": "", "noise_type": "fbm", "distortion": "" } },
+    "scroll_effects": { "parallax": { "enabled": false, "layers": "", "depth_range": "", "speed_curve": "" }, "scroll_triggered_animations": { "enabled": true, "trigger_points": "each section on entry", "animation_type": "fade-up", "scrub_behavior": "none" }, "scroll_morphing": { "enabled": false, "description": "" } },
+    "text_effects": { "type": "none", "description": "Static display type; serif-italic mixed into sans headlines", "technology": "font pairing", "params": { "split_strategy": "by-line", "animation_per_unit": "", "stagger": "", "effect_style": "" } },
+    "cursor_effects": { "enabled": false, "type": "none", "description": "", "params": { "shape": "", "size": "", "blend_mode": "", "trail": "", "interaction_zone": "" } },
+    "image_effects": { "type": "none", "description": "Phone bobs gently with a slight hand-held tilt", "technology": "CSS keyframes", "params": { "filter_pipeline": "", "hover_transform": "", "reveal_animation": "", "distortion_type": "" } },
+    "glassmorphism_neumorphism": { "enabled": true, "style": "glass", "params": { "blur_radius": "14px", "transparency": "sticky header 0.82 alpha", "border_treatment": "1px hairline on scroll", "shadow_type": "soft", "light_source_angle": "top" } },
+    "canvas_drawings": { "enabled": false, "type": "none", "description": "", "technology": "", "params": { "draw_method": "", "animation_loop": "", "color_scheme": "", "responsiveness": "", "interaction": "" } },
+    "svg_animations": { "enabled": false, "type": "none", "description": "Static inline SVG glyphs", "params": { "animation_method": "", "path_morphing": "", "stroke_animation": "", "filter_effects": "" } },
+    "composite_notes": "All effects are CSS-only and honour prefers-reduced-motion. No WebGL/Canvas needed."
+  }
+}

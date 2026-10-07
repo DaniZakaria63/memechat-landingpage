@@ -1,0 +1,6 @@
+# Local staging directory created by the deploy workflow
+_site/
+
+# OS noise
+.DS_Store
+Thumbs.db

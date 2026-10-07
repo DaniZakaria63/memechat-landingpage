@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>MemeChat — Offline AI Chat with Image &amp; Web Search</title>
+<meta name="description" content="MemeChat is an offline-first AI chat with vision, memory and web search — a full vision-language model that runs entirely on your phone."/>
+<meta name="theme-color" content="#FFFFFF"/>
+<link rel="icon" href="assets/memechat-icon.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0C0C0C; --ink2:#1F1F1F; --mut:#6E6E6E; --mut2:#A3A3A3;
+  --line:#ECECE8; --paper:#FFFFFF; --chip:#F4F4F2;
+  --green:#22C65E; --green-soft:#9FF6AF; --green-deep:#0E7A3B;
+  --mint:#EAF9EF; --yellow:#FFD84D; --peach:#FFB38A;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:"Plus Jakarta Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+::selection{background:#9FF6AF;color:#08210F}
+img{display:block}
+a{color:inherit;text-decoration:none}
+.mono{font-family:var(--mono)}
+.serif{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.01em}
+.wrap{max-width:1200px;margin:0 auto;padding:0 48px}
+
+/* ---------- pills ---------- */
+.pill{display:inline-flex;align-items:center;gap:9px;border:1.5px solid var(--ink);border-radius:999px;
+  padding:12px 22px;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink);background:#fff;transition:background .25s,color .25s,border-color .25s;white-space:nowrap}
+.pill:hover{background:var(--ink);color:#fff}
+.pill.solid{background:var(--ink);color:#fff}
+.pill.solid:hover{background:#262626;border-color:#262626}
+.pill.big{padding:16px 30px;font-size:11px}
+.pill .ar{width:14px;height:14px;flex:none}
+
+/* ============================================================
+   HERO (self-contained block — exported to assets/website-hero.png
+   at 1440x900 for the showcase monitor screen. Keep nav + hero inside.)
+   ============================================================ */
+.hero{position:relative;overflow:hidden;padding-bottom:46px}
+.nav{position:relative;display:flex;align-items:center;justify-content:space-between;max-width:1440px;margin:0 auto;padding:24px 48px;z-index:5}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:16px;letter-spacing:-.02em}
+.brand img{width:30px;height:30px;border-radius:9px;box-shadow:0 8px 18px rgba(12,20,14,.14)}
+.nav-links{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;gap:36px;
+  font-size:13.5px;font-weight:500;color:#1C1C1C}
+.nav-links a{opacity:.82;transition:opacity .2s}
+.nav-links a:hover{opacity:1}
+.nav .pill{padding:10px 18px;font-size:10px}
+
+.hero-in{position:relative;z-index:3;text-align:center;padding:52px 24px 0}
+.eyebrow{font-family:var(--serif);font-style:italic;font-size:21px;color:#191919}
+.hero h1{margin:16px auto 0;font-size:76px;line-height:1.01;letter-spacing:-.035em;font-weight:700;max-width:980px}
+.hero-sub{margin:22px auto 0;max-width:620px;font-size:15.5px;line-height:1.66;color:var(--mut)}
+.hero-cta{margin-top:30px}
+.hero-micro{margin-top:15px;font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;color:#A8A8A8;text-transform:uppercase}
+
+/* ---------- hero stage: aurora + phone ---------- */
+.hstage{--pscale:1.05;position:relative;height:700px;margin-top:6px}
+.aur{position:absolute;left:50%;top:-280px;width:1700px;height:1020px;transform:translateX(-50%);z-index:1;pointer-events:none;
+  background:
+    radial-gradient(26% 32% at 28% 44%, rgba(34,198,94,.50), transparent 70%),
+    radial-gradient(24% 30% at 38% 30%, rgba(159,246,175,.55), transparent 70%),
+    radial-gradient(28% 32% at 50% 52%, rgba(126,240,193,.42), transparent 72%),
+    radial-gradient(24% 28% at 62% 34%, rgba(201,242,126,.42), transparent 72%),
+    radial-gradient(20% 26% at 72% 52%, rgba(255,216,77,.34), transparent 76%),
+    radial-gradient(22% 28% at 82% 40%, rgba(255,179,138,.38), transparent 76%);
+  filter:blur(64px) saturate(1.15);opacity:.95;
+  -webkit-mask-image:radial-gradient(70% 76% at 50% 48%, #000 36%, transparent 76%);
+          mask-image:radial-gradient(70% 76% at 50% 48%, #000 36%, transparent 76%);
+  animation:aurmove 16s ease-in-out infinite alternate}
+@keyframes aurmove{from{transform:translateX(-50%) translateY(0) scale(1)}to{transform:translateX(-50%) translateY(16px) scale(1.03)}}
+.hshadow{position:absolute;left:50%;top:596px;width:430px;height:70px;transform:translateX(-50%);border-radius:50%;
+  background:radial-gradient(closest-side, rgba(12,24,15,.24), transparent 70%);filter:blur(14px);z-index:1}
+
+.devwrap{position:absolute;left:50%;top:0;transform:translateX(-50%) scale(var(--pscale));transform-origin:top center;z-index:2}
+.dev{position:relative;width:226px;height:565px;box-sizing:border-box;border:7px solid #14181B;border-radius:32px;
+  background:#0B100C;overflow:hidden;
+  box-shadow:0 40px 80px rgba(12,22,14,.24), 0 0 0 1px rgba(198,224,206,.26), inset 1px 1px 0 rgba(255,255,255,.16), inset -1px -1px 0 rgba(255,255,255,.08);
+  animation:bob 7s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:rotate(-4deg) translateY(0)}50%{transform:rotate(-4deg) translateY(-11px)}}
+.dev::after{content:"";position:absolute;inset:0;border-radius:25px;pointer-events:none;
+  background:linear-gradient(115deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,0) 34%);z-index:9}
+.dev .dscr{position:relative;width:218px;height:566px;transform:scale(.9725);transform-origin:top left;border-radius:25px;
+  background:#F9F9F9;
+  font-family:var(--mono);color:#DFE9E1;display:flex;flex-direction:column;overflow:hidden}
+.dev .shot{width:110%;margin-left:-5%;height:auto;display:block;flex:none}
+.dev .island{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:62px;height:15px;
+  border-radius:999px;background:#050805;box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);z-index:9}
+.dev .sbar{display:flex;justify-content:space-between;align-items:center;padding:10px 14px 0;font-size:7.5px;font-weight:700;color:#E9F3EC}
+.dev .sbar .sic{display:flex;align-items:center;gap:3px;filter:invert(1) brightness(1.08)}
+.dev .hdr{display:flex;align-items:center;justify-content:space-between;padding:0 12px;margin-top:7px;color:#DCE6DE}
+.dev .mpill{flex:1;margin:0 9px;display:flex;justify-content:center}
+.dev .mpill span{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.10);color:#DCE6DE;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.10);border-radius:999px;padding:4px 9px;font-size:6.5px;font-weight:600;
+  letter-spacing:-.01em;white-space:nowrap}
+.dev .mpill .dot{width:4px;height:4px;border-radius:50%;background:var(--green)}
+.dev .mpill svg path{stroke:#B9C9BD}
+.dev .greet{margin-top:26px;text-align:center}
+.dev .greet h4{font-size:11.5px;font-weight:700;letter-spacing:-.02em;color:#F2F8F3}
+.dev .greet p{font-size:7px;color:#8FA294;margin-top:6px}
+.dev .sgrid{display:grid;gap:12px;margin:32px 12px 0;grid-template-columns:repeat(2,minmax(0,1fr))}
+.dev .sbtn{display:flex;align-items:center;gap:6px;height:42px;border-radius:11px;background:rgba(255,255,255,.065);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.09);padding:0 10px}
+.dev .sbtn svg{width:11.5px;height:11.5px;color:#9FF6AF;flex:none}
+.dev .sbtn b{font-size:7.5px;font-weight:600;color:#DFE9E1}
+.dev .shint{font-size:7px;letter-spacing:.16em;text-transform:uppercase;color:#7E9184;text-align:center;margin-top:14px}
+.dev .inp{position:absolute;left:10px;right:10px;bottom:10px;background:#FCFCFC;border-radius:12px;padding:8px 10px 9px;
+  box-shadow:0 14px 30px rgba(0,0,0,.35)}
+.dev .load{display:flex;align-items:center;gap:4px;color:#126F39;font-size:6.5px;font-weight:700}
+.dev .load svg{animation:spin 1.1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.dev .ph{font-size:7.5px;color:#A2A2A2;margin-top:5px}
+.dev .chips{display:flex;align-items:center;gap:6px;margin-top:8px}
+.dev .chip{width:22px;height:22px;border-radius:8px;background:#EDEDED;display:flex;align-items:center;justify-content:center}
+.dev .chip svg{width:10px;height:10px;color:#1F1F1F}
+.dev .sendbtn{margin-left:auto;width:30px;height:22px;border-radius:8px;background:#9FF6AF;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(34,198,94,.35)}
+.dev .sendbtn svg{width:11px;height:11px;color:#072713}
+
+/* floating bits around the hero phone */
+.hfloat{position:absolute;z-index:4}
+.kpeek{left:50%;top:500px;margin-left:92px;width:80px;--rr:6deg;animation:bob2 6s ease-in-out infinite}
+.kpeek img{width:100%;border-radius:50%;background:#fff;
+  box-shadow:0 22px 44px rgba(12,22,14,.22), 0 0 0 6px #fff}
+.hbubble{left:50%;top:456px;margin-left:52px;background:#fff;border-radius:14px;padding:9px 13px;
+  font-family:var(--mono);font-size:10px;font-weight:700;color:#151515;
+  box-shadow:0 16px 36px rgba(12,22,14,.16);--rr:4deg;animation:bob2 6s .4s ease-in-out infinite}
+.hbubble::after{content:"";position:absolute;left:14px;bottom:-5px;width:11px;height:11px;background:#fff;transform:rotate(45deg);border-radius:2px}
+.hpill{left:50%;top:238px;margin-left:-236px;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);
+  border:1px solid rgba(12,20,14,.08);border-radius:999px;padding:9px 15px;
+  font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.14em;color:var(--green-deep);
+  box-shadow:0 16px 36px rgba(12,22,14,.12);--rr:-3deg;animation:bob2 6s .2s ease-in-out infinite}
+.hpill i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:7px;vertical-align:1px}
+@keyframes bob2{0%,100%{transform:translateY(0) rotate(var(--rr,0deg))}50%{transform:translateY(-9px) rotate(var(--rr,0deg))}}
+
+/* ============================================================
+   ABOUT — "Designed to help you do more, with less Wi-Fi"
+   ============================================================ */
+.about{padding:132px 0 118px}
+.about-grid{display:grid;grid-template-columns:1.45fr .55fr;gap:56px;align-items:end}
+.about h2{font-size:88px;line-height:1.02;letter-spacing:-.035em;font-weight:700}
+.about h2 .serif{font-size:96px;line-height:.98}
+.side p{font-size:19px;line-height:1.6;color:#1F1F1F;max-width:390px}
+.about-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:48px;margin-top:88px}
+.acol{border-top:1px solid var(--line);padding-top:22px}
+.acol .idx{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--green-deep);font-weight:700}
+.acol h4{margin-top:14px;font-size:15.5px;font-weight:700;letter-spacing:-.01em}
+.acol p{margin-top:10px;font-size:13.5px;line-height:1.7;color:var(--mut)}
+
+/* ============================================================
+   CHAT — watch it think
+   ============================================================ */
+.chatsec{padding:96px 0 118px}
+.chat-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:72px;align-items:center}
+.chat-grid h2{font-size:64px;line-height:1.02;letter-spacing:-.035em;font-weight:700}
+.chat-grid h2 .serif{font-size:72px}
+.chat-grid .side p{margin-top:24px;font-size:15px;line-height:1.7;color:var(--mut);max-width:360px}
+.facts{display:flex;flex-direction:column;gap:12px;margin-top:32px}
+.facts span{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:#8F8F8F}
+.facts span i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:9px;vertical-align:1px}
+
+.chatcard{background:#fff;border:1px solid var(--line);border-radius:26px;padding:24px 24px 20px;
+  box-shadow:0 46px 100px rgba(12,22,14,.12), 0 8px 26px rgba(12,22,14,.05)}
+.chead{display:flex;align-items:center;gap:12px;padding-bottom:16px;border-bottom:1px solid #F4F4F1}
+.chead img{width:40px;height:40px;border-radius:50%;box-shadow:0 4px 12px rgba(12,20,14,.12)}
+.cn b{display:block;font-family:var(--mono);font-size:12.5px;font-weight:700}
+.cn span{display:block;font-size:11px;color:#9C9C9C;margin-top:3px}
+.cmod{margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-size:9.5px;font-weight:700;letter-spacing:.08em;
+  color:var(--green-deep);background:var(--mint);border-radius:999px;padding:7px 12px}
+.cmod i{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.brow{display:flex;margin-top:14px}
+.brow.me{justify-content:flex-end}
+.bub{max-width:78%;background:var(--chip);border-radius:16px 16px 16px 5px;padding:12px 16px;
+  font-family:var(--mono);font-size:12.5px;line-height:1.55;color:var(--ink2)}
+.bub b{font-weight:700}
+.brow.me .bub{background:var(--green);color:#fff;border-radius:16px 16px 5px 16px}
+.rchip{display:inline-flex;align-items:center;gap:8px;margin:12px 0 0 4px;background:#fff;border:1px solid var(--line);
+  border-radius:999px;padding:8px 14px;font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.14em;color:#7C7C7C}
+.rchip svg{width:10px;height:10px;color:#9C9C9C}
+.ctime{margin-top:14px;text-align:center;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:#B5B5B5}
+.cinput{display:flex;align-items:center;gap:12px;margin-top:14px;background:var(--chip);border-radius:16px;padding:13px 14px 13px 18px}
+.cinput .ph{flex:1;font-family:var(--mono);font-size:12.5px;color:#A2A2A2}
+.csbtn{width:34px;height:26px;border-radius:9px;background:var(--green-soft);display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 12px rgba(34,198,94,.35)}
+.csbtn svg{width:12px;height:12px;color:#072713}
+.ccap{margin-top:20px;text-align:center;font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;color:#B5B5B5;text-transform:uppercase}
+
+/* ============================================================
+   CTA — take the kitten home
+   ============================================================ */
+.ctasec{padding:8px 0 104px}
+.cta-panel{position:relative;overflow:hidden;border-radius:36px;padding:108px 60px 92px;text-align:center;
+  background:#fff;border:1px solid var(--line)}
+.cta-aur{position:absolute;inset:-60px;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(24% 30% at 34% 42%, rgba(34,198,94,.52), transparent 70%),
+    radial-gradient(22% 28% at 44% 30%, rgba(159,246,175,.60), transparent 70%),
+    radial-gradient(24% 30% at 54% 54%, rgba(126,240,193,.46), transparent 72%),
+    radial-gradient(20% 26% at 66% 38%, rgba(201,242,126,.46), transparent 72%),
+    radial-gradient(18% 24% at 74% 56%, rgba(255,216,77,.40), transparent 76%),
+    radial-gradient(18% 24% at 24% 58%, rgba(255,179,138,.38), transparent 76%);
+  filter:blur(58px) saturate(1.15);
+  -webkit-mask-image:radial-gradient(70% 88% at 50% 54%, #000 44%, transparent 82%);
+          mask-image:radial-gradient(70% 88% at 50% 54%, #000 44%, transparent 82%);
+  animation:aurmove2 14s ease-in-out infinite alternate}
+@keyframes aurmove2{from{transform:translateY(0) scale(1)}to{transform:translateY(12px) scale(1.02)}}
+.cta-panel>*{position:relative;z-index:1}
+.cta-kit{position:relative;display:inline-block;margin-bottom:30px}
+.cta-kit img{width:118px;border-radius:50%;background:#fff;margin:0 auto;
+  box-shadow:0 26px 54px rgba(12,22,14,.20), 0 0 0 7px #fff;transform:rotate(6deg);animation:bob2 6.5s ease-in-out infinite;--rr:6deg}
+.cbub{position:absolute;top:-16px;right:-118px;background:#fff;border-radius:13px;padding:9px 13px;
+  font-family:var(--mono);font-size:10.5px;font-weight:700;color:#151515;box-shadow:0 16px 34px rgba(12,22,14,.16);
+  transform:rotate(4deg);animation:bob2 6.5s .5s ease-in-out infinite;--rr:4deg;white-space:nowrap}
+.cbub::after{content:"";position:absolute;left:12px;bottom:-5px;width:10px;height:10px;background:#fff;transform:rotate(45deg);border-radius:2px}
+.cta-panel h2{font-size:64px;line-height:1.02;letter-spacing:-.035em;font-weight:700;max-width:760px;margin:0 auto}
+.cta-panel h2 .serif{font-size:72px}
+.cta-btns{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:38px;flex-wrap:wrap}
+.cta-micro{margin-top:26px;font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:#8F8F8F;text-transform:uppercase}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{border-top:1px solid var(--line);padding:60px 0 44px}
+.fgrid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:44px}
+.fbrand .brand{font-size:15px}
+.fbrand .brand img{width:28px;height:28px}
+.fbrand p{margin-top:16px;font-size:13.5px;line-height:1.7;color:var(--mut);max-width:300px}
+.fcol h5{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.22em;color:#9C9C9C;margin-bottom:16px}
+.fcol a{display:block;font-size:13.5px;font-weight:500;color:#2A2A2A;margin-bottom:11px;opacity:.85;transition:opacity .2s}
+.fcol a:hover{opacity:1}
+.fbot{margin-top:54px;padding-top:26px;border-top:1px solid var(--line);text-align:center;
+  font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:#A8A8A8;text-transform:uppercase}
+
+/* ---------- responsive ---------- */
+@media(max-width:1300px){
+  .hstage{--pscale:.94;height:660px}
+  .hshadow{top:530px}
+  .kpeek{top:450px}
+  .hbubble{top:406px}
+  .hpill{top:210px}
+}
+@media(max-width:1120px){
+  .hero h1{font-size:60px}
+  .about h2{font-size:66px}
+  .about h2 .serif{font-size:72px}
+  .about-grid{grid-template-columns:1fr;gap:30px;align-items:start}
+  .chat-grid{grid-template-columns:1fr;gap:46px}
+  .chat-grid h2{font-size:52px}
+  .cta-panel h2{font-size:52px}
+}
+@media(max-width:1000px){
+  .nav-links{display:none}
+}
+@media(max-width:760px){
+  .wrap{padding:0 22px}
+  .nav{padding:18px 22px}
+  .hero-in{padding-top:32px}
+  .hero h1{font-size:42px}
+  .eyebrow{font-size:16.5px}
+  .hero-sub{font-size:14.5px}
+  .hstage{--pscale:.72;height:520px}
+  .hshadow{top:406px}
+  .kpeek{top:330px;margin-left:76px;width:64px}
+  .hbubble{top:292px;margin-left:40px}
+  .hpill{top:150px;margin-left:-200px}
+  .about{padding:84px 0 78px}
+  .about h2{font-size:40px}
+  .about h2 .serif{font-size:44px}
+  .side p{font-size:16px}
+  .about-cols{grid-template-columns:1fr;gap:28px;margin-top:56px}
+  .chatsec{padding:64px 0 80px}
+  .chat-grid h2{font-size:38px}
+  .chat-grid h2 .serif{font-size:42px}
+  .chatcard{padding:18px 16px 16px}
+  .bub{font-size:11.5px;max-width:86%}
+  .ctasec{padding-bottom:70px}
+  .cta-panel{padding:74px 24px 66px;border-radius:26px}
+  .cta-panel h2{font-size:36px}
+  .cta-panel h2 .serif{font-size:40px}
+  .cta-kit img{width:92px}
+  .cbub{right:-92px;font-size:9.5px}
+  .pill.big{padding:14px 22px;font-size:10px}
+  .fgrid{grid-template-columns:1fr;gap:32px}
+  .fbot{font-size:9px}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HERO — self-contained (nav + hero). This block is exported to
+     assets/website-hero.png at 1440x900 and embedded scaled into
+     the showcase monitor screen. Keep it working standalone.
+     ============================================================ -->
+<section class="hero" id="hero">
+  <nav class="nav">
+    <a class="brand" href="#hero"><img src="assets/memechat-icon.png" alt="MemeChat icon"/>MemeChat</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#chat">Chat</a>
+      <a href="#download">Download</a>
+    </div>
+    <a class="pill" href="https://play.google.com/store/apps/details?id=fun.walawe.memechat" target="_blank" rel="noopener">Get MemeChat
+      <svg class="ar" viewBox="0 0 16 16"><path d="M3 8h9M8.5 3.5 13 8l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </nav>
+
+  <div class="hero-in">
+    <div class="eyebrow">Your memes, finally explained.</div>
+    <h1>Meme Smarter,<br>Not Harder.</h1>
+    <p class="hero-sub">The AI chat that actually knows memes. Ask, roast, caption, translate — a full vision-language model that runs entirely on your phone.</p>
+    <div class="hero-cta">
+      <a class="pill solid big" href="https://play.google.com/store/apps/details?id=fun.walawe.memechat" target="_blank" rel="noopener">Download for free
+        <svg class="ar" viewBox="0 0 16 16"><path d="M3 8h9M8.5 3.5 13 8l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+    <div class="hero-micro">Free · 504 MB · Android 8+ · No account</div>
+
+    <div class="hstage">
+      <div class="aur" aria-hidden="true"></div>
+      <div class="hshadow" aria-hidden="true"></div>
+
+      <div class="devwrap">
+        <div class="dev">
+          <div class="dscr">
+            <img class="shot" src="assets/screen-chat.png" alt="MemeChat app">
+            <div class="island"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hfloat hpill"><i></i>100% ON-DEVICE</div>
+      <div class="hfloat hbubble">hi nerd!</div>
+      <div class="hfloat kpeek"><img src="assets/memechat-icon.png" alt="MemeChat kitten mascot"/></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ABOUT
+     ============================================================ -->
+<section class="about" id="features">
+  <div class="wrap">
+    <div class="about-grid">
+      <h2>Designed to<br>Help You Do More,<br><span class="serif">With Less Wi-Fi.</span></h2>
+      <div class="side">
+        <p>MemeChat is built for people who live on their phones but don&rsquo;t want to live in the cloud. Everything runs on-device — private, fast, and always yours.</p>
+      </div>
+    </div>
+    <div class="about-cols">
+      <div class="acol">
+        <div class="idx">01 — VISION</div>
+        <h4>Meme Vision</h4>
+        <p>Point the camera at any meme and get the joke, the context, and the right reply — analyzed on-device in seconds.</p>
+      </div>
+      <div class="acol">
+        <div class="idx">02 — MEMORY</div>
+        <h4>It Remembers</h4>
+        <p>Running jokes, names, bits. MemeChat keeps a private memory so you never repeat yourself twice.</p>
+      </div>
+      <div class="acol">
+        <div class="idx">03 — OFFLINE</div>
+        <h4>Truly Offline</h4>
+        <p>No signal, no problem. Chat, roast, translate and caption — even in airplane mode. Nothing is ever uploaded.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CHAT
+     ============================================================ -->
+<section class="chatsec" id="chat">
+  <div class="wrap">
+    <div class="chat-grid">
+      <div class="side">
+        <h2>Watch it <span class="serif">think.</span></h2>
+        <p>Every answer comes with a peek behind the curtain — watch the reasoning, then keep the joke.</p>
+        <div class="facts">
+          <span><i></i>MINICPM-V 4.6 · 504 MB</span>
+          <span><i></i>VISION + TEXT + MEMORY</span>
+          <span><i></i>0 UPLOADS · 0 ACCOUNTS</span>
+        </div>
+      </div>
+      <div class="chatcard">
+        <div class="chead">
+          <img src="assets/memechat-icon.png" alt="MemeAI avatar"/>
+          <div class="cn"><b>MemeAI</b><span>on-device · private</span></div>
+          <span class="cmod"><i></i>MiniCPM-V 4.6</span>
+        </div>
+        <div class="brow bot"><div class="bub">Hi, nerd! What meme you got today?</div></div>
+        <div class="rchip"><svg viewBox="0 0 12 12"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>REASONING PROCESS — 3 STEPS</div>
+        <div class="brow me"><div class="bub">explain this meme 🐱</div></div>
+        <div class="brow bot"><div class="bub">Classic distracted-cat format&hellip; the joke is in the whiskers. <b>8/10.</b></div></div>
+        <div class="ctime">23:52 · OFFLINE</div>
+        <div class="cinput">
+          <span class="ph">Explain this meme&hellip;</span>
+          <span class="csbtn"><svg viewBox="0 0 24 24"><path d="M10.3 4.1 21 12 10.3 19.9Z" fill="currentColor"/><path d="M4.4 7.3 8.1 12l-3.7 4.7Z" fill="currentColor"/></svg></span>
+        </div>
+      </div>
+    </div>
+    <div class="ccap mono">Recreated from the real app — same mono type, same colors</div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CTA
+     ============================================================ -->
+<section class="ctasec" id="download">
+  <div class="wrap">
+    <div class="cta-panel">
+      <div class="cta-aur" aria-hidden="true"></div>
+      <div class="cta-kit">
+        <img src="assets/memechat-icon.png" alt="MemeChat kitten"/>
+        <span class="cbub">take me home</span>
+      </div>
+      <h2>Take the kitten <span class="serif">home.</span></h2>
+      <div class="cta-btns">
+        <a class="pill solid big" href="https://play.google.com/store/apps/details?id=fun.walawe.memechat" target="_blank" rel="noopener">Download for Android
+          <svg class="ar" viewBox="0 0 16 16"><path d="M3 8h9M8.5 3.5 13 8l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="pill big" href="https://github.com" target="_blank" rel="noopener">Star on GitHub</a>
+      </div>
+      <div class="cta-micro">Free to start · 504 MB · Android 8+ · fun.walawe.memechat</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div class="fbrand">
+        <div class="brand"><img src="assets/memechat-icon.png" alt="MemeChat icon"/>MemeChat</div>
+        <p>Offline AI chat with image &amp; web search.<br>Made privately in Indonesia.</p>
+      </div>
+      <div class="fcol">
+        <h5>APP</h5>
+        <a href="#features">Features</a>
+        <a href="#chat">Chat</a>
+        <a href="#hero">Back to top</a>
+      </div>
+      <div class="fcol">
+        <h5>MORE</h5>
+        <a href="https://play.google.com/store/apps/details?id=fun.walawe.memechat" target="_blank" rel="noopener">Download</a>
+        <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+        <a href="mailto:dani.zakaria@proton.me">Contact</a>
+      </div>
+    </div>
+    <div class="fbot">© 2026 Dream Team Work — made with 🐾 in Indonesia</div>
+  </div>
+</footer>
+
+</body>
+</html>
