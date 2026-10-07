@@ -5,13 +5,14 @@ name: Deploy
 #
 # How it works:
 #   1. Stage the site (memechat-landing.html -> index.html + assets/).
-#   2. Connect to the server through the Cloudflare Tunnel using an Access
-#      service token, then rsync the staged files as the `deploy` user.
+#   2. rsync the staged files to the server as the `deploy` user over
+#      key-only SSH (direct IPv4 connection; no Cloudflare tunnel involved).
 #
 # Required repository secrets (see DEPLOY.md):
-#   DEPLOY_SSH_KEY            private key of github-actions-memechat
-#   CF_ACCESS_CLIENT_ID       Cloudflare Access service token ID
-#   CF_ACCESS_CLIENT_SECRET   Cloudflare Access service token secret
+#   DEPLOY_SSH_KEY   private key of the github-actions-memechat deploy key
+#
+# Note: the Cloudflare Access service-token secrets (CF_ACCESS_CLIENT_ID /
+# CF_ACCESS_CLIENT_SECRET) are no longer used and can be deleted.
 
 on:
   push:
@@ -27,8 +28,7 @@ permissions:
   contents: read
 
 env:
-  CLOUDFLARED_VERSION: "2026.10.0"
-  DEPLOY_HOST: admin.dream-team.works
+  DEPLOY_HOST: 139.99.88.23
   DEPLOY_USER: deploy
   DEPLOY_PATH: /var/www/memechat.dream-team.works
 
@@ -42,11 +42,10 @@ jobs:
 
       - name: Check deployment secrets are configured
         run: |
-          missing=0
-          [ -n "${{ secrets.DEPLOY_SSH_KEY }}" ] || { echo "::error::Secret DEPLOY_SSH_KEY is not set (see DEPLOY.md)"; missing=1; }
-          [ -n "${{ secrets.CF_ACCESS_CLIENT_ID }}" ] || { echo "::error::Secret CF_ACCESS_CLIENT_ID is not set (see DEPLOY.md)"; missing=1; }
-          [ -n "${{ secrets.CF_ACCESS_CLIENT_SECRET }}" ] || { echo "::error::Secret CF_ACCESS_CLIENT_SECRET is not set (see DEPLOY.md)"; missing=1; }
-          exit $missing
+          if [ -z "${{ secrets.DEPLOY_SSH_KEY }}" ]; then
+            echo "::error::Secret DEPLOY_SSH_KEY is not set (see DEPLOY.md)"
+            exit 1
+          fi
 
       - name: Stage static site
         run: |
@@ -56,14 +55,7 @@ jobs:
           cp -r assets _site/assets
           echo "Staged $(find _site -type f | wc -l) files"
 
-      - name: Install cloudflared
-        run: |
-          curl -fsSL -o /tmp/cloudflared \
-            "https://github.com/cloudflare/cloudflared/releases/download/${CLOUDFLARED_VERSION}/cloudflared-linux-amd64"
-          sudo install -m 755 /tmp/cloudflared /usr/local/bin/cloudflared
-          cloudflared --version
-
-      - name: Configure SSH over Cloudflare Tunnel
+      - name: Configure SSH
         run: |
           mkdir -p ~/.ssh
           printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
@@ -75,13 +67,12 @@ jobs:
             IdentityFile ~/.ssh/deploy_key
             IdentitiesOnly yes
             StrictHostKeyChecking accept-new
-            ProxyCommand cloudflared access ssh --hostname %h
           SSH_CONFIG
 
+      - name: Verify SSH connectivity
+        run: ssh -o BatchMode=yes -o ConnectTimeout=15 deploy-target 'echo SSH_OK'
+
       - name: Deploy via rsync
-        env:
-          TUNNEL_SERVICE_TOKEN_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
-          TUNNEL_SERVICE_TOKEN_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
         run: |
           rsync -az --delete --chmod=D755,F644 -e ssh ./_site/ "deploy-target:${DEPLOY_PATH}/"
 
